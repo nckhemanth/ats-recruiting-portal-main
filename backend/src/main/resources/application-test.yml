@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:ats;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchClientAutoConfiguration
+app:
+  jwt:
+    secret: test-secret-key-longer-than-thirty-two-characters
+    ttl-hours: 1
+  elasticsearch-enabled: false
+

@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: ats-recruiting-portal
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/recruitflow}
+    username: ${POSTGRES_USER:recruitflow}
+    password: ${POSTGRES_PASSWORD:recruitflow}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        default_batch_fetch_size: 50
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: ${PORT:8080}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:local-development-secret-must-be-32-bytes}
+    ttl-hours: 12
+  cors-origin: ${CORS_ORIGIN:http://localhost:5173}
+  uploads-directory: ${UPLOADS_DIRECTORY:uploads}
+  elasticsearch-enabled: ${ELASTICSEARCH_ENABLED:false}
+  seed-demo: ${SEED_DEMO:false}
+
