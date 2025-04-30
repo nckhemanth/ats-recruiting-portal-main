@@ -1,0 +1,16 @@
+digraph AtsSequence {
+  graph [rankdir=TB, bgcolor="white", pad=0.3, nodesep=0.4, ranksep=0.5, fontname="Helvetica", label="ATS — Candidate Application and Pipeline Sequence", labelloc=t, fontsize=21];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#334155", fillcolor="#f8fafc", margin="0.16,0.1"];
+  edge [fontname="Helvetica", fontsize=9, color="#475569", penwidth=1.3];
+  login [label="1  Candidate authenticates and receives a signed JWT", fillcolor="#dbeafe"];
+  browse [label="2  React loads a pageable public job view"];
+  submit [label="3  Candidate submits cover letter + resume"];
+  authorize [label="4  Spring Security authorizes CANDIDATE role"];
+  validate [label="5  Verify open job, candidate identity, and no duplicate"];
+  resume [label="6  Validate and store resume"];
+  persist [label="7  Persist application at the first pipeline stage", fillcolor="#dcfce7"];
+  review [label="8  Recruiter loads owned job applications", fillcolor="#dbeafe"];
+  owner [label="9  Service verifies recruiter ownership and target stage"];
+  move [label="10  Move application and return recruiter DTO", fillcolor="#dcfce7"];
+  login -> browse -> submit -> authorize -> validate -> resume -> persist -> review -> owner -> move;
+}

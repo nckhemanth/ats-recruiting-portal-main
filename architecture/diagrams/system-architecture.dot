@@ -1,0 +1,27 @@
+digraph AtsArchitecture {
+  graph [rankdir=LR, bgcolor="white", pad=0.35, nodesep=0.55, ranksep=0.8, fontname="Helvetica", label="ATS Recruiting Portal — System Architecture", labelloc=t, fontsize=22];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#334155", penwidth=1.4, margin="0.18,0.12"];
+  edge [fontname="Helvetica", fontsize=9, color="#475569", penwidth=1.4];
+  visitor [label="Visitor / Candidate / Recruiter", fillcolor="#e0f2fe"];
+  web [label="Nginx + React 19\nTypeScript · Vite · Router", fillcolor="#dbeafe"];
+  subgraph cluster_api {
+    label="Java 21 / Spring Boot 3 API"; color="#93c5fd"; style="rounded,filled"; fillcolor="#eff6ff";
+    auth [label="Spring Security\nJWT + RBAC", fillcolor="#fef3c7"];
+    jobs [label="Job Service\nfilters · ownership · stages", fillcolor="#ffffff"];
+    apps [label="Application Service\napply · move · notes", fillcolor="#ffffff"];
+    search [label="Search Service\nweighted multi-field query", fillcolor="#ffffff"];
+  }
+  postgres [label="PostgreSQL\nusers · jobs · stages\napplications · notes", shape=cylinder, fillcolor="#dcfce7"];
+  elastic [label="Elasticsearch\njob search projection", shape=cylinder, fillcolor="#ede9fe"];
+  resumes [label="Resume Storage\nDocker volume / object store", shape=cylinder, fillcolor="#cffafe"];
+  visitor -> web [label="HTTPS"];
+  web -> auth [label="REST + JWT"];
+  auth -> jobs;
+  auth -> apps;
+  jobs -> postgres [label="JPA / Flyway"];
+  apps -> postgres [label="transaction"];
+  apps -> resumes [label="validated upload"];
+  jobs -> search [label="text query"];
+  search -> elastic [label="index / search"];
+  search -> postgres [label="hydrate IDs"];
+}

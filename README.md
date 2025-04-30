@@ -5,6 +5,8 @@ A full-stack applicant tracking system for public careers discovery, candidate a
 
 ## Stack
 
+See the [architecture package](architecture/README.md) for the system picture, component boundaries, data ownership, and candidate-application sequence.
+
 - Java 21 and Spring Boot 3
 - Spring Security with signed JWT sessions and role-based access control
 - Spring Data JPA/Hibernate, PostgreSQL, Flyway, and pageable specification queries
@@ -44,4 +46,3 @@ cd ../frontend && npm ci && npm run lint && npm run build
 ## Configuration
 
 Copy `.env.example` to `.env` before changing local database credentials or secrets. Use a strong unique JWT secret and managed PostgreSQL/Elasticsearch services in production.
-
