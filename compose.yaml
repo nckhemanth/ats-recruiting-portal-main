@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-recruitflow}
+      POSTGRES_USER: ${POSTGRES_USER:-recruitflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recruitflow}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-recruitflow}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.8
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-recruitflow}
+      POSTGRES_USER: ${POSTGRES_USER:-recruitflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recruitflow}
+      JWT_SECRET: ${JWT_SECRET:-local-recruit-flow-secret-key-32-bytes}
+      SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
+      ELASTICSEARCH_ENABLED: "true"
+      SEED_DEMO: "true"
+      CORS_ORIGIN: http://localhost:3000
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      postgres: { condition: service_healthy }
+      elasticsearch: { condition: service_healthy }
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8080/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
+  elastic-data:
+  uploads:
+
